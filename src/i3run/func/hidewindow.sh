@@ -1,11 +1,12 @@
 #!/bin/bash
 
 hidewindow() {
-  # send it to the scratchpad
   if ((!_o[nohide])); then
     if [[ -z ${i3list[TWP]} ]]; then
-      # keep floating state in a var
-      messy "[con_id=${i3list[TWC]}]" floating enable, move scratchpad
+      # send window to the next free workspace (not the scratchpad!)
+      o_ws=$(i3-msg -t get_workspaces  | jq '.[] | .num' | tail -n 1)
+      n_ws=`expr $o_ws + 1`
+      messy "[con_id=${i3list[TWC]}]" move to workspace $n_ws
       i3var set "hidden${i3list[TWC]}" "${i3list[TWF]}"
     else
       # if it is handled by i3fyra  hide the (A|B|C|D) container
